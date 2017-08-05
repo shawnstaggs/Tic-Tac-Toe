@@ -1,57 +1,117 @@
 # Create Tic Tac Toe for the python bootcamp
 from __future__ import print_function
+
 from IPython.display import clear_output
 def display_board(board):
-    
-    pass
+    clear_output()
+    print('   |   |')
+    print(' ' + board[7] + ' | ' + board[8] + ' | ' + board[9])
+    print('   |   |')
+    print('------------')
+    print('   |   |')
+    print(' ' + board[4] + ' | ' + board[5] + ' | ' + board[6])
+    print('   |   |')
+    print('------------')
+    print('   |   |')
+    print(' ' + board[1] + ' | ' + board[2] + ' | ' + board[3])
+    print('   |   |')
 
 def player_input():
-    pass
-
+    marker = ''
+    while not (marker == 'X' or marker == 'O'):
+        marker = raw_input('Player 1: Do you want to be X or O?').upper()
+        if marker == 'X':
+            return ('X','O')
+        else:
+            return ('O','X')
+    
+    
 def place_marker(board, marker, position):
-    pass
+    board[position] = marker
 
 def win_check(board, mark):
-    pass
+    return ((board[7] == mark and board[8] == mark and board[9] == mark) or #top row
+    (board[4] == mark and board[5] == mark and board[6] == mark) or #middle row
+    (board[1] == mark and board[2] == mark and board[3] == mark) or #bottom row
+    (board[7] == mark and board[4] == mark and board[1] == mark) or #first column
+    (board[8] == mark and board[5] == mark and board[2] == mark) or #second column
+    (board[9] == mark and board[6] == mark and board[3] == mark) or #third column
+    (board[7] == mark and board[5] == mark and board[3] == mark) or #top left diag
+    (board[9] == mark and board[5] == mark and board[1] == mark)    #top right diag
+    )
+
 
 import random
 def choose_first():
-    print("Player %s goes first.", random.choice([1,2]))
+    if random.randint(0,1) == 0:
+        return 'Player 2'
+    else:
+        return 'Player 1'
 
 def space_check(board, position):
-
-    pass
+    return board[position] == ' '
+    
 
 def full_board_check(board):
-
-    pass
+    for i in range(1,10):
+        if space_check(board, i):
+            return False
+    return True
 
 def player_choice(board):
+    position = ' '
+    while position not in '1 2 3 4 5 6 7 8 9'.split() or not space_check(board, int(position)):
+        position = raw_input('Choose your next position: (1 - 9) ')
+    return int(position)
 
-    pass
 
 def replay():
-    again = input("Would you like to play again?(Y/N)")
-    if again.isalpha():
-        if again[0] == 'y':
-            return True
-        else:
-            return False
-    else:
-        replay()
+    return raw_input('Would you like to play again? Enter Yes or No ').upper().startswith('Y')
+
 
 print('Welcome to Tic Tax Toe!')
 
 while True:
-    choose_first()
+    theBoard = [' '] * 10
+    player1_marker, player2_marker = player_input()
+    turn = choose_first()
+    print(turn + ' will go first.')
+    game_on = True
 
-#    set up the game
+    while game_on:
+        if turn == 'Player 1':
+            display_board(theBoard)
+            position = player_choice(theBoard)
+            place_marker(theBoard, player1_marker, position)
 
-#    while game on 
-#        player 1 turn
+            if win_check(theBoard, player1_marker):
+                display_board(theBoard)
+                print('Congratulations! You have won the game!')
+                game_on = False
+            else:
+                if full_board_check(theBoard):
+                    display_board(theBoard)
+                    print('The game is a draw.')
+                    break
+                else:
+                    turn = 'Player 2'
 
-#        player 2 turn
+        else:
+            display_board(theBoard)
+            position = player_choice(theBoard)
+            place_marker(theBoard, player2_marker, position)
 
+            if win_check(theBoard, player2_marker):
+                display_board(theBoard)
+                print('Congratulations! You have won the game!')
+                game_on = False
+            else:
+                if full_board_check(theBoard):
+                    display_board(theBoard)
+                    print('The game is a draw.')
+                    break
+                else:
+                    turn = 'Player 1'
 
     if not replay():
         break
